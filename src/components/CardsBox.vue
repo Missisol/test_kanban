@@ -4,9 +4,6 @@
     <draggable 
       v-model="tasks" 
       group="tasks" 
-      @start="drag=true" 
-      @end="drag=false"
-      @change="log"
     >
       <div 
         class="card" 
@@ -89,6 +86,8 @@ export default {
           },
           set(value) {
             this.$store.commit('updateCardsColumn', {value, row: this.row})
+            this.$store.dispatch('updateCards', {value, row: this.row})
+
           }
         },
     },
@@ -114,15 +113,6 @@ export default {
       closeTextarea() {
         this.isAdding = false
         this.text = ''
-      },
-      log() {
-        const arg = arguments[0]
-        if (arg && arg.added) {
-          this.elAdded = arg.added.element
-          this.newIndexAdded = arg.added.newIndex
-
-          this.$store.dispatch('updateCards', {value: this.elAdded, row: this.row})
-        } 
       },
     },
 }

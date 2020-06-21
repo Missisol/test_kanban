@@ -72,25 +72,25 @@ export default {
             }
         },
         async updateCards({ getters  }, {value, row}) {
-            const payload = {
-                row,
-                seq_num: value.seq_number,
-                text: value.text
+            for (let i = 0; i < value.length; i++) {
+                const payload = {
+                    row,
+                    seq_num: i,
+                    text: value[i].text
+                }
+    
+                try {
+                    await api.patch(`/cards/${value[i].id}`, payload, {
+                        headers: {
+                            'Authorization': `JWT ${getters.token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    })
+    
+                } catch(err) {
+                    console.log(err.message)
+                }
             }
-
-            try {
-                await api.patch(`/cards/${value.id}`, payload, {
-                    headers: {
-                        'Authorization': `JWT ${getters.token}`,
-                        'Content-Type': 'application/json',
-                    },
-                })
-
-            } catch(err) {
-                console.log(err.message)
-            }
-
-
         }
     },
     getters: {
