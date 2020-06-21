@@ -2,29 +2,24 @@ import api from '../api'
 
 export default {
     state: {
-        cards: [
-            [], [], [], [],
-        ],
+        cards: [],
     },
     mutations: {
         setCards(state, payload) {
-            payload.map(card => {
-                state.cards[+card.row].push(card)
-            })
+                state.cards = payload
         },
         addCard(state, payload) {
-            state.cards[+payload.row].push(payload)
+            state.cards = [...state.cards, payload]
         },
         deleteCard(state, payload) {
-            const { id, row } = payload
             
-            const idx = state.cards[+row].findIndex(el => el.id === id)
-            state.cards[+row].splice(idx, 1)
+            const idx = state.cards.findIndex(el => el.id === payload)
+            state.cards = [...state.cards.slice(0, idx), ...state.cards.slice(idx + 1)]
         },
-        updateCardsColumn(state, {value, row}) {
-            const length = state.cards[row].length
-                state.cards[row].splice(0, length)
-                state.cards[row].push(...value)
+        updateCardsColumn(state, payload) {
+            const { value,  row } = payload
+            const temp = state.cards.filter(card => +card.row !== row)
+            state.cards = [...temp, ...value]
         }
     },
     actions: {
@@ -58,9 +53,8 @@ export default {
             }
         },
         async deleteCard({ commit, getters }, payload) {
-            const { id } = payload
             try {
-                await api.delete(`/cards/${id}/`, {
+                await api.delete(`/cards/${payload}/`, {
                     headers: {
                         'Authorization': `JWT ${getters.token}`,
                     }
@@ -99,12 +93,13 @@ export default {
         },
         cardsByRow(state) {
             return row => {
-                return state.cards[row]
+                return state.cards.filter(el => +el.row === row)
             }
         },
         countCardsByRow(state) {
             return row => {
-                return state.cards[row].length
+                const column = state.cards.filter(el => +el.row === row)
+                return column.length
             }
         },
     }

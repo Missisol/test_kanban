@@ -12,7 +12,7 @@
         >
         <div 
         class="card__icon-wrapper"
-        @click="deleteCard(card.id, card.row)"
+        @click="deleteCard(card.id)"
         >
           <img class="card__icon" src="../assets/close.svg" alt="close">
         </div>
@@ -78,17 +78,19 @@ export default {
             return this.$store.getters.cardsByRow(this.row)
           },
           set(value) {
+            value = value.map(card => {
+              card.row = this.row
+              return card
+              })
+
             this.$store.commit('updateCardsColumn', {value, row: this.row})
             this.$store.dispatch('updateCards', {value, row: this.row})
-
-          }
+          },
         },
     },
-    created() {
-    },
     methods: {
-     deleteCard(id, row) {
-        this.$store.dispatch('deleteCard', { id, row })
+     deleteCard(id) {
+        this.$store.dispatch('deleteCard', id)
       },
       addCard() {
 
