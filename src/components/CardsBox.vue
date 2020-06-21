@@ -71,13 +71,6 @@ export default {
     data: () => ({
       isAdding: false,
       text: '',
-      elAdded: '',
-      newIndexAdded: '',
-      elRemoved: '',
-      oldIndexRemoved: '',
-      elMoved: '',
-      oldIndexMoved: '',
-      newIndexMoved: '',
     }),
     computed: {
         tasks: {
